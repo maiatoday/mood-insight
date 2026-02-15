@@ -20,6 +20,7 @@ data class AddEditUiState(
     val sunlight: Boolean = false,
     val sleep: String = "",
     val food: String = "",
+    val timestamp: Date = Date(),
     val isEntrySaved: Boolean = false
 )
 
@@ -32,12 +33,16 @@ class AddEditViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AddEditUiState())
     val uiState: StateFlow<AddEditUiState> = _uiState.asStateFlow()
 
-    private var entryId: Int? = savedStateHandle.get<Int>("entryId")
+    private var isNew: Boolean = true
+    private var moodId: Int = 0
 
     init {
-        if (entryId != null) {
+        val entryId = savedStateHandle.get<Int>("entryId")
+        if (entryId != null && entryId != -1) {
+            isNew = false
+            moodId = entryId
             viewModelScope.launch {
-                moodEntryDao.getEntryById(entryId!!).collect { entry ->
+                moodEntryDao.getEntryById(entryId).collect { entry ->
                     if (entry != null) {
                         _uiState.value = AddEditUiState(
                             moods = entry.moods,
@@ -45,7 +50,8 @@ class AddEditViewModel @Inject constructor(
                             sport = entry.sport,
                             sunlight = entry.sunlight,
                             sleep = entry.sleep,
-                            food = entry.food
+                            food = entry.food,
+                            timestamp = entry.timestamp
                         )
                     }
                 }
@@ -80,18 +86,26 @@ class AddEditViewModel @Inject constructor(
     fun saveEntry() {
         viewModelScope.launch {
             val currentState = _uiState.value
+
             val moodEntry = MoodEntry(
-                id = entryId ?: 0,
+                id = moodId,
                 moods = currentState.moods,
                 notes = currentState.notes,
                 sport = currentState.sport,
                 sunlight = currentState.sunlight,
                 sleep = currentState.sleep,
                 food = currentState.food,
-                timestamp = Date()
+                timestamp = currentState.timestamp
             )
-            moodEntryDao.insert(moodEntry)
+
+            if (isNew) {
+                moodEntryDao.insert(moodEntry)
+            } else {
+                moodEntryDao.update(moodEntry)
+            }
+
             _uiState.value = _uiState.value.copy(isEntrySaved = true)
         }
     }
+
 }
