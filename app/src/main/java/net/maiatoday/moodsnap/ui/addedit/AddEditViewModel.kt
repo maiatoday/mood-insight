@@ -38,14 +38,16 @@ class AddEditViewModel @Inject constructor(
         if (entryId != null) {
             viewModelScope.launch {
                 moodEntryDao.getEntryById(entryId!!).collect { entry ->
-                    _uiState.value = AddEditUiState(
-                        moods = entry.moods,
-                        notes = entry.notes,
-                        sport = entry.sport,
-                        sunlight = entry.sunlight,
-                        sleep = entry.sleep,
-                        food = entry.food
-                    )
+                    if (entry != null) {
+                        _uiState.value = AddEditUiState(
+                            moods = entry.moods,
+                            notes = entry.notes,
+                            sport = entry.sport,
+                            sunlight = entry.sunlight,
+                            sleep = entry.sleep,
+                            food = entry.food
+                        )
+                    }
                 }
             }
         }

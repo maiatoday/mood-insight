@@ -14,7 +14,7 @@ interface MoodEntryDao {
     fun getAllEntries(): Flow<List<MoodEntry>>
 
     @Query("SELECT * FROM mood_entries WHERE id = :id")
-    fun getEntryById(id: Int): Flow<MoodEntry>
+    fun getEntryById(id: Int): Flow<MoodEntry?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: MoodEntry)
