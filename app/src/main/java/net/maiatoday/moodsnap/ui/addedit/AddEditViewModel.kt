@@ -20,6 +20,7 @@ data class AddEditUiState(
     val sunlight: Boolean = false,
     val sleep: String = "",
     val food: String = "",
+    val energy: Int = 0,
     val timestamp: Date = Date(),
     val isEntrySaved: Boolean = false
 )
@@ -51,6 +52,7 @@ class AddEditViewModel @Inject constructor(
                             sunlight = entry.sunlight,
                             sleep = entry.sleep,
                             food = entry.food,
+                            energy = entry.energy,
                             timestamp = entry.timestamp
                         )
                     }
@@ -82,6 +84,10 @@ class AddEditViewModel @Inject constructor(
     fun onFoodChange(food: String) {
         _uiState.value = _uiState.value.copy(food = food)
     }
+    
+    fun onEnergyChange(energy: Int) {
+        _uiState.value = _uiState.value.copy(energy = energy)
+    }
 
     fun saveEntry() {
         viewModelScope.launch {
@@ -95,6 +101,7 @@ class AddEditViewModel @Inject constructor(
                 sunlight = currentState.sunlight,
                 sleep = currentState.sleep,
                 food = currentState.food,
+                energy = currentState.energy,
                 timestamp = currentState.timestamp
             )
 

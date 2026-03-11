@@ -15,6 +15,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -84,6 +85,14 @@ fun AddEditScreen(
                 onValueChange = viewModel::onFoodChange,
                 label = { Text("Food") },
                 modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Energy: ${uiState.energy}")
+            Slider(
+                value = uiState.energy.toFloat(),
+                onValueChange = { viewModel.onEnergyChange(it.toInt()) },
+                valueRange = 0f..15f,
+                steps = 14
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = viewModel::saveEntry) {

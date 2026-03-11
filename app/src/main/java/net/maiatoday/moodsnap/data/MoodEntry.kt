@@ -14,5 +14,6 @@ data class MoodEntry(
     val sunlight: Boolean,
     val sleep: String,
     val food: String,
+    val energy: Int = 0,
     val timestamp: Date = Date()
 )

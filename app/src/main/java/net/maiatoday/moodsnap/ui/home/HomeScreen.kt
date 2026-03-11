@@ -61,6 +61,7 @@ fun MoodEntryItem(entry: MoodEntry, onClick: () -> Unit) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text("Moods: ${entry.moods.joinToString()}")
             Text("Notes: ${entry.notes}")
+            Text("Energy: ${entry.energy}")
         }
     }
 }
