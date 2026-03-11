@@ -8,12 +8,12 @@ import java.util.Date
 data class MoodEntry(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val moods: List<String>,
+    val moodScore: Int,
+    val tags: List<String>,
     val notes: String,
-    val sport: Boolean,
+    val movement: Boolean,
     val sunlight: Boolean,
-    val sleep: String,
-    val food: String,
+    val sleep: Boolean,
     val energy: Int = 0,
     val timestamp: Date = Date()
 )

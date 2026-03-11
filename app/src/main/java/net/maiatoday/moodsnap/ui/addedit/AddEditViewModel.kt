@@ -14,12 +14,12 @@ import java.util.Date
 import javax.inject.Inject
 
 data class AddEditUiState(
-    val moods: List<String> = emptyList(),
+    val moodScore: Int = 0,
+    val tags: List<String> = emptyList(),
     val notes: String = "",
-    val sport: Boolean = false,
+    val movement: Boolean = false,
     val sunlight: Boolean = false,
-    val sleep: String = "",
-    val food: String = "",
+    val sleep: Boolean = false,
     val energy: Int = 0,
     val timestamp: Date = Date(),
     val isEntrySaved: Boolean = false
@@ -46,12 +46,12 @@ class AddEditViewModel @Inject constructor(
                 moodEntryDao.getEntryById(entryId).collect { entry ->
                     if (entry != null) {
                         _uiState.value = AddEditUiState(
-                            moods = entry.moods,
+                            moodScore = entry.moodScore,
+                            tags = entry.tags,
                             notes = entry.notes,
-                            sport = entry.sport,
+                            movement = entry.movement,
                             sunlight = entry.sunlight,
                             sleep = entry.sleep,
-                            food = entry.food,
                             energy = entry.energy,
                             timestamp = entry.timestamp
                         )
@@ -61,30 +61,30 @@ class AddEditViewModel @Inject constructor(
         }
     }
 
-    fun onMoodsChange(moods: List<String>) {
-        _uiState.value = _uiState.value.copy(moods = moods)
+    fun onMoodScoreChange(moodScore: Int) {
+        _uiState.value = _uiState.value.copy(moodScore = moodScore)
+    }
+
+    fun onTagsChange(tags: List<String>) {
+        _uiState.value = _uiState.value.copy(tags = tags)
     }
 
     fun onNotesChange(notes: String) {
         _uiState.value = _uiState.value.copy(notes = notes)
     }
 
-    fun onSportChange(sport: Boolean) {
-        _uiState.value = _uiState.value.copy(sport = sport)
+    fun onMovementChange(movement: Boolean) {
+        _uiState.value = _uiState.value.copy(movement = movement)
     }
 
     fun onSunlightChange(sunlight: Boolean) {
         _uiState.value = _uiState.value.copy(sunlight = sunlight)
     }
-
-    fun onSleepChange(sleep: String) {
+    
+    fun onSleepChange(sleep: Boolean) {
         _uiState.value = _uiState.value.copy(sleep = sleep)
     }
 
-    fun onFoodChange(food: String) {
-        _uiState.value = _uiState.value.copy(food = food)
-    }
-    
     fun onEnergyChange(energy: Int) {
         _uiState.value = _uiState.value.copy(energy = energy)
     }
@@ -95,12 +95,12 @@ class AddEditViewModel @Inject constructor(
 
             val moodEntry = MoodEntry(
                 id = moodId,
-                moods = currentState.moods,
+                moodScore = currentState.moodScore,
+                tags = currentState.tags,
                 notes = currentState.notes,
-                sport = currentState.sport,
+                movement = currentState.movement,
                 sunlight = currentState.sunlight,
                 sleep = currentState.sleep,
-                food = currentState.food,
                 energy = currentState.energy,
                 timestamp = currentState.timestamp
             )
@@ -114,5 +114,4 @@ class AddEditViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isEntrySaved = true)
         }
     }
-
 }

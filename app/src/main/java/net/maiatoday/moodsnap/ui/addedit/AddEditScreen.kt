@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
-val allMoods = listOf("Happy", "Sad", "Anxious", "Excited", "Calm", "Angry")
+val allTags = listOf("Work", "Family", "Friends", "Hobby", "Travel", "Health")
 
 @Composable
 fun AddEditScreen(
@@ -46,9 +46,14 @@ fun AddEditScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            MoodSelector(
-                moods = uiState.moods,
-                onMoodsChange = viewModel::onMoodsChange
+            MoodScoreSelector(
+                moodScore = uiState.moodScore,
+                onMoodScoreChange = viewModel::onMoodScoreChange
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            TagSelector(
+                tags = uiState.tags,
+                onTagsChange = viewModel::onTagsChange
             )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
@@ -60,10 +65,17 @@ fun AddEditScreen(
             Spacer(modifier = Modifier.height(16.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
-                    checked = uiState.sport,
-                    onCheckedChange = viewModel::onSportChange
+                    checked = uiState.movement,
+                    onCheckedChange = viewModel::onMovementChange
                 )
-                Text("Sport")
+                Text("Movement")
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = uiState.sleep,
+                    onCheckedChange = viewModel::onSleepChange
+                )
+                Text("Sleep")
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
@@ -72,20 +84,6 @@ fun AddEditScreen(
                 )
                 Text("Sunlight")
             }
-            Spacer(modifier = Modifier.height(16.dp))
-            OutlinedTextField(
-                value = uiState.sleep,
-                onValueChange = viewModel::onSleepChange,
-                label = { Text("Sleep") },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            OutlinedTextField(
-                value = uiState.food,
-                onValueChange = viewModel::onFoodChange,
-                label = { Text("Food") },
-                modifier = Modifier.fillMaxWidth()
-            )
             Spacer(modifier = Modifier.height(16.dp))
             Text("Energy: ${uiState.energy}")
             Slider(
@@ -102,29 +100,53 @@ fun AddEditScreen(
     }
 }
 
+@Composable
+fun MoodScoreSelector(
+    moodScore: Int,
+    onMoodScoreChange: (Int) -> Unit
+) {
+    val moodDescriptions = mapOf(
+        -2 to "Very Bad",
+        -1 to "Bad",
+        0 to "Neutral",
+        1 to "Good",
+        2 to "Very Good"
+    )
+    Column {
+        Text("Mood Score: ${moodDescriptions[moodScore]}")
+        Slider(
+            value = moodScore.toFloat(),
+            onValueChange = { onMoodScoreChange(it.toInt()) },
+            valueRange = -2f..2f,
+            steps = 3
+        )
+    }
+}
+
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun MoodSelector(
-    moods: List<String>,
-    onMoodsChange: (List<String>) -> Unit
+fun TagSelector(
+    tags: List<String>,
+    onTagsChange: (List<String>) -> Unit
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        allMoods.forEach { mood ->
-            val isSelected = moods.contains(mood)
+        allTags.forEach { tag ->
+            val isSelected = tags.contains(tag)
             ElevatedButton(
                 onClick = {
-                    val newMoods = if (isSelected) {
-                        moods - mood
+                    val newTags = if (isSelected) {
+                        tags - tag
                     } else {
-                        moods + mood
+                        tags + tag
                     }
-                    onMoodsChange(newMoods)
+                    onTagsChange(newTags)
                 },
             ) {
-                Text(mood)
+                Text(tag)
             }
         }
     }
