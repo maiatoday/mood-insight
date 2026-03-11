@@ -25,7 +25,10 @@ fun NavGraph(navController: NavHostController) {
                 defaultValue = -1
             })
         ) {
-            AddEditScreen(onEntrySaved = { navController.popBackStack() })
+            AddEditScreen(
+                onBackClick = { navController.popBackStack() },
+                onEntrySaved = { navController.popBackStack() }
+            )
         }
     }
 }
