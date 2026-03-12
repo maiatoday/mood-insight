@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.SentimentDissatisfied
 import androidx.compose.material.icons.filled.SentimentNeutral
 import androidx.compose.material.icons.filled.SentimentSatisfied
@@ -67,11 +66,6 @@ fun HomeScreen(
         topBar = {
             TopAppBar(
                 title = { Text("Mood Snap") },
-                navigationIcon = {
-                    IconButton(onClick = { /* Menu action */ }) {
-                        Icon(Icons.Default.Menu, contentDescription = "Menu")
-                    }
-                },
                 actions = {
                     IconButton(onClick = onHistoryClick) {
                         Icon(
@@ -245,18 +239,23 @@ fun MoodGraph(dailyMoods: List<DailyMood>, modifier: Modifier = Modifier) {
             dailyMoods.forEach { mood ->
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Bottom,
                     modifier = Modifier.fillMaxHeight()
                 ) {
                     Box(
+                        contentAlignment = Alignment.BottomCenter,
                         modifier = Modifier
-                            .width(12.dp)
-                            .fillMaxHeight(mood.score / 5f)
-                            .background(
-                                MaterialTheme.colorScheme.primary,
-                                shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
-                            )
-                    )
+                            .weight(1f)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .width(12.dp)
+                                .fillMaxHeight(mood.score / 5f)
+                                .background(
+                                    MaterialTheme.colorScheme.primary,
+                                    shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
+                                )
+                        )
+                    }
                     Spacer(Modifier.height(4.dp))
                     Text(
                         text = mood.dayLabel,
