@@ -24,7 +24,7 @@
         </PromptTemplate>
         <PromptTemplate>
           <option name="enabled" value="true" />
-          <option name="name" value="02.01 fix crash  backup if button doesn't wor" />
+          <option name="name" value="02.01 fix crash backup if button doesn't work" />
           <option name="text" value="I'm getting the following error in my running application. The error is: FATAL EXCEPTION: main&#10;```&#10;FATAL EXCEPTION: main&#10;Process: net.maiatoday.moodsnap, PID: 5579&#10;java.lang.IllegalStateException: The query result was empty, but expected a single row to return a NON-NULL object of type 'net.maiatoday.moodsnap.`data`.MoodEntry'.&#10;at net.maiatoday.moodsnap.data.MoodEntryDao_Impl.getEntryById$lambda$0(MoodEntryDao_Impl.kt:217)&#10;at net.maiatoday.moodsnap.data.MoodEntryDao_Impl$$ExternalSyntheticLambda0.invoke(D8$$SyntheticClass:0) with tag AndroidRuntime&#10;```&#10;Fix this issue" />
         </PromptTemplate>
         <PromptTemplate>
@@ -66,6 +66,21 @@
           <option name="enabled" value="true" />
           <option name="name" value="04.01 deeplink" />
           <option name="text" value="is there some guidelines or tools in android studio to create a deeplink to the AddEdit screen" />
+        </PromptTemplate>
+        <PromptTemplate>
+          <option name="enabled" value="true" />
+          <option name="name" value="04.02 tags exploration" />
+          <option name="text" value="Here is a prompt I need to improve:&#10;&lt;prompt&gt;&#10;The MoodEntry in this app has tags but there is no way to show which tags are in the entry on the UI. There is also no way to add new tags. What do you suggest I do to improve this. I want to be able to see all the tags that are added to an entry. I want to be able to remove a tag. I want to be able to easily add tags that I have already created. I was thinking about toggleable pill buttons but not sure about the UX. Give me a few scenarios of how to fix this.&#10;&lt;/prompt&gt;&#10;evaluate this prompt and rewrite it for clarity. Don't implement anything. Add reference to any files as needed. Also if you think it will help break the process into a series of that can be executed sequentiall so I can have save points inbetween. Include a first step to get the database into an appropriate state for this feature. Feel free to create any new tables or entities if necessary." />
+        </PromptTemplate>
+        <PromptTemplate>
+          <option name="enabled" value="true" />
+          <option name="name" value="04.03 Cleanup Tags Column" />
+          <option name="text" value="# Cleanup Task: Remove Deprecated `tags` Column from `MoodEntry`&#10;&#10;## Context&#10;We have successfully refactored the tagging system to use a many-to-many relationship (`MoodEntryTagCrossRef`). The original `tags: List&lt;String&gt;` column in the `MoodEntry` table is now redundant and should be removed to keep the database schema clean and avoid confusion.&#10;&#10;## Goal&#10;Remove the `tags` property from the `MoodEntry` entity and the corresponding column from the database.&#10;&#10;## Steps&#10;&#10;### 1. Update `MoodEntry` Entity&#10;*   File: `app/src/main/java/net/maiatoday/moodsnap/data/MoodEntry.kt`&#10;*   Action: Remove `val tags: List&lt;String&gt;`.&#10;&#10;### 2. Update `MoodEntryDao`&#10;*   File: `app/src/main/java/net/maiatoday/moodsnap/data/MoodEntryDao.kt`&#10;*   Action: Ensure no queries or inserts reference the old `tags` column. (Most should be fine as Room handles the entity structure, but double-check custom queries if any).&#10;&#10;### 3. Update Database Version &amp; Migration&#10;*   File: `app/src/main/java/net/maiatoday/moodsnap/data/AppDatabase.kt`&#10;*   Action:&#10;    *   Increment `version` to 3.&#10;    *   Add a migration strategy.&#10;        *   *Option A (Development)*: `.fallbackToDestructiveMigration()` is already enabled, so this will automatically wipe and recreate the table without the column.&#10;        *   *Option B (Production)*: Write a `Migration` (2 -&gt; 3) that:&#10;            1. Creates a new table `mood_entries_new` without the `tags` column.&#10;            2. Copies data from `mood_entries` to `mood_entries_new`.&#10;            3. Drops `mood_entries`.&#10;            4. Renames `mood_entries_new` to `mood_entries`.&#10;&#10;### 4. Fix Compilation Errors&#10;*   Files:&#10;    *   `AddEditViewModel.kt`: Update `MoodEntry` constructor calls to remove the `tags` argument.&#10;    *   `Converters.kt`: Remove unused converters for `List&lt;String&gt;` if they are no longer used elsewhere.&#10;    *   Any test files that instantiate `MoodEntry`.&#10;&#10;## Verification&#10;*   Build and run the app.&#10;*   Verify that adding/viewing mood entries still works correctly with the new relationship-based tags.&#10;" />
+        </PromptTemplate>
+        <PromptTemplate>
+          <option name="enabled" value="true" />
+          <option name="name" value="04.04 Fix HomeScreen tags" />
+          <option name="text" value="I see from the previous changes that `Updated GetWeeklySummaryUseCase: Temporarily returns empty tags (fix to compile).` could you fix this by creating the task getTagsForDataRange" />
         </PromptTemplate>
       </list>
     </option>

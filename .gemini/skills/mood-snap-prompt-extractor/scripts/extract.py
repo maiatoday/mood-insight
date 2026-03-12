@@ -41,12 +41,9 @@ def extract_prompts():
                     clean_name += '.md'
                 file_path = os.path.join(prompts_dir, clean_name)
                 
-                if not os.path.exists(file_path):
-                    with open(file_path, 'w', encoding='utf-8') as f:
-                        f.write(text)
-                    print(f"Created: {file_path}")
-                else:
-                    print(f"Skipped (already exists): {file_path}")
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    f.write(text)
+                print(f"Updated/Created: {file_path}")
 
     except ET.ParseError as e:
         print(f"Error parsing XML: {e}")
