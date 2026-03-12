@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import net.maiatoday.moodsnap.data.AppDatabase
 import net.maiatoday.moodsnap.data.MoodEntryDao
+import net.maiatoday.moodsnap.data.TagDao
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -22,11 +23,18 @@ object AppModule {
             context.applicationContext,
             AppDatabase::class.java,
             "mood_snap_database"
-        ).build()
+        )
+        .fallbackToDestructiveMigration(false)
+        .build()
     }
 
     @Provides
     fun provideMoodEntryDao(database: AppDatabase): MoodEntryDao {
         return database.moodEntryDao()
+    }
+
+    @Provides
+    fun provideTagDao(database: AppDatabase): TagDao {
+        return database.tagDao()
     }
 }
