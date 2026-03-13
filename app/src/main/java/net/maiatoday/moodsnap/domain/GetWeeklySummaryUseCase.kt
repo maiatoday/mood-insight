@@ -12,6 +12,7 @@ import javax.inject.Inject
 data class WeeklySummary(
     val averageMood: Float = 0f,
     val averageEnergy: Float = 0f,
+    val resonance: Float = 0f,
     val movementCount: Int = 0,
     val sunlightCount: Int = 0,
     val sleepCount: Int = 0,
@@ -26,7 +27,8 @@ data class DailyMood(
 )
 
 class GetWeeklySummaryUseCase @Inject constructor(
-    private val moodRepository: MoodRepository
+    private val moodRepository: MoodRepository,
+    private val resonanceEngine: ResonanceEngine
 ) {
     operator fun invoke(): Flow<WeeklySummary> {
         val calendar = Calendar.getInstance()
@@ -50,6 +52,7 @@ class GetWeeklySummaryUseCase @Inject constructor(
         
         val averageMood = entries.map { it.moodScore }.average().toFloat()
         val averageEnergy = entries.map { it.energy }.average().toFloat()
+        val resonance = resonanceEngine.compute(entries).toFloat()
         
         val movementCount = entries.count { it.movement }
         val sunlightCount = entries.count { it.sunlight }
@@ -79,6 +82,7 @@ class GetWeeklySummaryUseCase @Inject constructor(
         return WeeklySummary(
             averageMood = averageMood,
             averageEnergy = averageEnergy,
+            resonance = resonance,
             movementCount = movementCount,
             sunlightCount = sunlightCount,
             sleepCount = sleepCount,

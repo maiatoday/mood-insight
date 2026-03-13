@@ -74,10 +74,6 @@ class AddEditViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(moodScore = moodScore)
     }
 
-    fun onTagsChange(tags: List<String>) {
-        _uiState.value = _uiState.value.copy(tags = tags)
-    }
-
     fun addTag(tagName: String) {
         val currentTags = _uiState.value.tags.toMutableList()
         if (!currentTags.contains(tagName)) {

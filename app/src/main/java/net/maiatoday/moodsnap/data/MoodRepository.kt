@@ -20,4 +20,6 @@ interface MoodRepository {
     suspend fun addTagToEntry(entryId: Int, tagName: String)
     suspend fun removeTagFromEntry(entryId: Int, tagName: String)
     suspend fun updateTagsForEntry(entryId: Int, tags: List<String>)
+    suspend fun generateSampleData()
+    suspend fun clearAllData()
 }

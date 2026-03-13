@@ -2,7 +2,9 @@ package net.maiatoday.moodsnap.data
 
 import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
+import java.util.Calendar
 import java.util.Date
+import java.util.Random
 import javax.inject.Inject
 
 class OfflineMoodRepository @Inject constructor(
@@ -51,5 +53,38 @@ class OfflineMoodRepository @Inject constructor(
             val crossRef = MoodEntryTagCrossRef(moodEntryId = entryId, tagName = tagName)
             moodEntryDao.insertMoodEntryTagCrossRef(crossRef)
         }
+    }
+
+    override suspend fun generateSampleData() {
+        val calendar = Calendar.getInstance()
+        val random = Random()
+        for (i in 0 until 21) {
+            val entry = MoodEntry(
+                moodScore = random.nextInt(5) + 1,
+                notes = "Sample data day $i",
+                movement = random.nextBoolean(),
+                sunlight = random.nextBoolean(),
+                sleep = random.nextBoolean(),
+                energy = random.nextInt(5) + 1,
+                timestamp = calendar.time
+            )
+            val entryId = moodEntryDao.insert(entry).toInt()
+            
+            // Add some tags
+            val tagNames = listOf("Work", "Social", "Exercise", "Reading", "Hobby", "Relax")
+            val selectedTags = tagNames.shuffled().take(random.nextInt(3) + 1)
+            selectedTags.forEach { tagName ->
+                tagDao.insert(Tag(tagName))
+                val crossRef = MoodEntryTagCrossRef(moodEntryId = entryId, tagName = tagName)
+                moodEntryDao.insertMoodEntryTagCrossRef(crossRef)
+            }
+            
+            calendar.add(Calendar.DAY_OF_YEAR, -1)
+        }
+    }
+
+    override suspend fun clearAllData() {
+        moodEntryDao.deleteAllEntries()
+        tagDao.deleteAllTags()
     }
 }

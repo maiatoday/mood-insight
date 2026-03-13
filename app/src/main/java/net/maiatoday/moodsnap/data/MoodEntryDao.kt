@@ -50,4 +50,7 @@ interface MoodEntryDao {
     
     @Query("DELETE FROM mood_entry_tag_cross_ref WHERE moodEntryId = :moodEntryId")
     suspend fun deleteTagsForEntry(moodEntryId: Int)
+
+    @Query("DELETE FROM mood_entries")
+    suspend fun deleteAllEntries()
 }

@@ -10,6 +10,7 @@ import androidx.navigation.navDeepLink
 import net.maiatoday.moodsnap.ui.addedit.AddEditScreen
 import net.maiatoday.moodsnap.ui.home.HomeScreen
 import net.maiatoday.moodsnap.ui.history.MoodHistoryScreen
+import net.maiatoday.moodsnap.ui.settings.SettingsScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -17,7 +18,8 @@ fun NavGraph(navController: NavHostController) {
         composable(Screen.Home.route) {
             HomeScreen(
                 onAddEntry = { navController.navigate(Screen.AddEdit.createRoute(null)) },
-                onHistoryClick = { navController.navigate(Screen.History.route) }
+                onHistoryClick = { navController.navigate(Screen.History.route) },
+                onSettingsClick = { navController.navigate(Screen.Settings.route) }
             )
         }
         composable(Screen.History.route) {
@@ -38,6 +40,11 @@ fun NavGraph(navController: NavHostController) {
             AddEditScreen(
                 onBackClick = { navController.popBackStack() },
                 onEntrySaved = { navController.popBackStack() }
+            )
+        }
+        composable(Screen.Settings.route) {
+            SettingsScreen(
+                onBack = { navController.popBackStack() }
             )
         }
     }

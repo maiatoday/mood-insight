@@ -6,4 +6,5 @@ sealed class Screen(val route: String) {
     object AddEdit : Screen("add_edit?entryId={entryId}") {
         fun createRoute(entryId: Int?) = "add_edit?entryId=$entryId"
     }
+    object Settings : Screen("settings")
 }

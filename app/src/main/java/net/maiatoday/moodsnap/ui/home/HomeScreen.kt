@@ -47,7 +47,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.maiatoday.moodsnap.domain.DailyMood
 import net.maiatoday.moodsnap.domain.WeeklySummary
@@ -58,7 +58,8 @@ import java.util.Locale
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onAddEntry: () -> Unit,
-    onHistoryClick: () -> Unit
+    onHistoryClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val summary by viewModel.summary.collectAsStateWithLifecycle()
 
@@ -73,7 +74,7 @@ fun HomeScreen(
                             contentDescription = "History"
                         )
                     }
-                    IconButton(onClick = { /* Settings action */ }) {
+                    IconButton(onClick = onSettingsClick) {
                         Icon(Icons.Default.Settings, contentDescription = "Settings")
                     }
                 }
@@ -171,6 +172,15 @@ fun HomeContent(summary: WeeklySummary) {
                             text = String.format(Locale.getDefault(), "%.1f", summary.averageMood),
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("Resonance", style = MaterialTheme.typography.labelMedium)
+                        Text(
+                            text = String.format(Locale.getDefault(), "%.1f", summary.resonance),
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.secondary
                         )
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -309,6 +319,7 @@ fun HomeScreenPreview() {
     val dummySummary = WeeklySummary(
         averageMood = 4.2f,
         averageEnergy = 3.5f,
+        resonance = 4.5f,
         movementCount = 4,
         sunlightCount = 5,
         sleepCount = 6,
