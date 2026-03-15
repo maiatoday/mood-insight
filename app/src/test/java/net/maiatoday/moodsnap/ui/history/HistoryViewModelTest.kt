@@ -38,9 +38,9 @@ class HistoryViewModelTest {
     }
 
     @Test
-    fun `entries flow emits data from repository`() = runTest {
+    fun `entries flow emits mapped data from repository`() = runTest {
         val entry1 = MoodEntry(moodScore = 4, notes = "Good", movement = false, sunlight = true, sleep = true, energy = 0, timestamp = Date())
-        val entry2 = MoodEntry(moodScore = 2, notes = "Bad", movement = false, sunlight = false, sleep = false, energy = 0, timestamp = Date())
+        val entry2 = MoodEntry(moodScore = 2, notes = "Meh", movement = false, sunlight = false, sleep = false, energy = 0, timestamp = Date())
         repository.insert(entry1)
         repository.insert(entry2)
         
@@ -52,8 +52,10 @@ class HistoryViewModelTest {
 
         val entries = viewModel.entries.value
         assertEquals(2, entries.size)
-        assertEquals(4, entries[0].moodEntry.moodScore)
-        assertEquals(2, entries[1].moodEntry.moodScore)
+        assertEquals(4, entries[0].mood.score)
+        assertEquals("Good", entries[0].mood.description)
+        assertEquals(2, entries[1].mood.score)
+        assertEquals("Meh", entries[1].mood.description)
         
         job.cancel()
     }

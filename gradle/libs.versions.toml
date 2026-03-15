@@ -1,16 +1,15 @@
 [versions]
 agp = "9.1.0"
 kotlin = "2.3.10"
-coreKtx = "1.17.0"
-junit = "4.13.2"
-junitJupiter = "5.11.4"
+coreKtx = "1.18.0"
+junitJupiter = "6.0.3"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.10.0"
 lifecycleViewmodelCompose = "2.10.0"
 lifecycleRuntimeCompose = "2.10.0"
-activityCompose = "1.12.4"
-composeBom = "2026.02.01"
+activityCompose = "1.13.0"
+composeBom = "2026.03.00"
 googleDaggerHiltAndroid = "2.59.2"
 googleDevtoolsKsp = "2.3.6"
 hiltNavigationCompose = "1.3.0"
@@ -28,15 +27,15 @@ runner = "1.7.0"
 kotlinxCoroutinesAndroid = "1.10.2"
 kotlinxCoroutinesCore = "1.10.2"
 accompanistPermissions = "0.37.3"
-datastorePreferences = "1.2.0"
+datastorePreferences = "1.2.1"
 material = "1.13.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
 junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiter" }
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
 junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "junitJupiter" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junitJupiter" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }

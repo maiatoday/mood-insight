@@ -1,7 +1,7 @@
 package net.maiatoday.moodsnap.domain
 
-import net.maiatoday.moodsnap.data.MoodEntry
-import java.util.*
+import java.time.Instant
+import java.time.Duration
 import kotlin.math.exp
 import javax.inject.Inject
 
@@ -23,22 +23,22 @@ class ResonanceEngine @Inject constructor() {
      * @param entries The list of mood entries to process.
      * @return A double representing the resonance (weighted average score).
      */
-    fun compute(entries: List<MoodEntry>): Double {
+    fun compute(entries: List<MoodEntryDomain>): Double {
         if (entries.isEmpty()) return 0.0
 
-        val now = System.currentTimeMillis()
+        val now = Instant.now()
         var totalWeight = 0.0
         var weightedSum = 0.0
 
         for (entry in entries) {
             // Calculate time difference in days
-            val diffInMillis = now - entry.timestamp.time
-            val days = diffInMillis.toDouble() / (1000 * 60 * 60 * 24)
+            val duration = Duration.between(entry.timestamp, now)
+            val days = duration.toDays().toDouble()
             
             // Exponential decay formula: w = e^(-lambda * days)
             val weight = exp(-lambda * days)
             
-            weightedSum += entry.moodScore * weight
+            weightedSum += entry.mood.score * weight
             totalWeight += weight
         }
 

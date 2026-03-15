@@ -6,8 +6,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
-import net.maiatoday.moodsnap.data.MoodEntryWithTags
 import net.maiatoday.moodsnap.domain.GetMoodEntriesUseCase
+import net.maiatoday.moodsnap.domain.MoodEntryDomain
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,7 +15,7 @@ class HistoryViewModel @Inject constructor(
     getMoodEntriesUseCase: GetMoodEntriesUseCase
 ) : ViewModel() {
 
-    val entries: StateFlow<List<MoodEntryWithTags>> = getMoodEntriesUseCase()
+    val entries: StateFlow<List<MoodEntryDomain>> = getMoodEntriesUseCase()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

@@ -20,11 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.SentimentDissatisfied
-import androidx.compose.material.icons.filled.SentimentNeutral
-import androidx.compose.material.icons.filled.SentimentSatisfied
-import androidx.compose.material.icons.filled.SentimentVeryDissatisfied
-import androidx.compose.material.icons.filled.SentimentVerySatisfied
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
@@ -43,13 +38,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.maiatoday.moodsnap.domain.DailyMood
+import net.maiatoday.moodsnap.domain.Mood
 import net.maiatoday.moodsnap.domain.WeeklySummary
 import java.util.Locale
 
@@ -135,20 +130,20 @@ fun HomeContent(summary: WeeklySummary) {
                             modifier = Modifier.fillMaxSize()
                         )
                     }
-                    
+
                     Spacer(modifier = Modifier.width(16.dp))
 
                     // Current Status
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        val currentMood = summary.currentMood ?: Mood.OK
                         Text("Today", style = MaterialTheme.typography.labelMedium)
                         Spacer(modifier = Modifier.height(8.dp))
-                        Icon(
-                            imageVector = getMoodIcon(summary.currentMood ?: 3),
-                            contentDescription = "Current Mood",
-                            modifier = Modifier.size(64.dp),
-                            tint = MaterialTheme.colorScheme.primary
+                        Text(
+                            text = currentMood.emoji,
+                            style = MaterialTheme.typography.displayLarge,
+                            color = currentMood.color
                         )
                     }
                 }
@@ -226,7 +221,7 @@ fun HomeContent(summary: WeeklySummary) {
                 }
             }
         }
-        
+
         // Spacer for FAB
         item {
             Spacer(modifier = Modifier.height(80.dp))
@@ -242,11 +237,12 @@ fun MoodGraph(dailyMoods: List<DailyMood>, modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.Bottom
     ) {
         if (dailyMoods.isEmpty()) {
-             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                 Text("No Data", style = MaterialTheme.typography.bodySmall)
-             }
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("No Data", style = MaterialTheme.typography.bodySmall)
+            }
         } else {
             dailyMoods.forEach { mood ->
+                val moodEnum = mood.mood
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxHeight()
@@ -259,9 +255,9 @@ fun MoodGraph(dailyMoods: List<DailyMood>, modifier: Modifier = Modifier) {
                         Box(
                             modifier = Modifier
                                 .width(12.dp)
-                                .fillMaxHeight(mood.score / 5f)
+                                .fillMaxHeight(moodEnum.score / 5f)
                                 .background(
-                                    MaterialTheme.colorScheme.primary,
+                                    moodEnum.color,
                                     shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
                                 )
                         )
@@ -302,17 +298,6 @@ fun HabitRow(label: String, count: Int) {
     }
 }
 
-fun getMoodIcon(score: Int): ImageVector {
-    return when (score) {
-        5 -> Icons.Default.SentimentVerySatisfied
-        4 -> Icons.Default.SentimentSatisfied
-        3 -> Icons.Default.SentimentNeutral
-        2 -> Icons.Default.SentimentDissatisfied
-        1 -> Icons.Default.SentimentVeryDissatisfied
-        else -> Icons.Default.SentimentNeutral
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
@@ -325,17 +310,17 @@ fun HomeScreenPreview() {
         sleepCount = 6,
         tags = listOf("Work", "Exercise", "Reading", "Junk Food"),
         dailyMoods = listOf(
-            DailyMood("Mon", 3),
-            DailyMood("Tue", 4),
-            DailyMood("Wed", 5),
-            DailyMood("Thu", 2),
-            DailyMood("Fri", 4),
-            DailyMood("Sat", 5),
-            DailyMood("Sun", 4)
+            DailyMood("Mon", Mood.OK),
+            DailyMood("Tue", Mood.GOOD),
+            DailyMood("Wed", Mood.GREAT),
+            DailyMood("Thu", Mood.MEH),
+            DailyMood("Fri", Mood.GOOD),
+            DailyMood("Sat", Mood.GREAT),
+            DailyMood("Sun", Mood.GOOD)
         ),
-        currentMood = 4
+        currentMood = Mood.GOOD
     )
-    
+
     MaterialTheme {
         HomeContent(summary = dummySummary)
     }

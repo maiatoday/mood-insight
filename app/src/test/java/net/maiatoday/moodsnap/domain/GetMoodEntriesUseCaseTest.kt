@@ -22,7 +22,7 @@ class GetMoodEntriesUseCaseTest {
     }
 
     @Test
-    fun `invoke should return all entries with tags from repository`() = runTest {
+    fun `invoke should return all entries with tags from repository mapped to domain`() = runTest {
         // Given
         val tag1 = Tag("Happy")
         val tag2 = Tag("Work")
@@ -43,10 +43,12 @@ class GetMoodEntriesUseCaseTest {
 
         // Then
         assertEquals(2, result.size)
-        assertEquals(id1, result[0].moodEntry.id)
-        assertEquals(tag1.name, result[0].tags[0].name)
-        assertEquals(id2, result[1].moodEntry.id)
-        assertEquals(tag2.name, result[1].tags[0].name)
+        assertEquals(id1, result[0].id)
+        assertEquals(tag1.name, result[0].tags[0])
+        assertEquals("Great", result[0].mood.description)
+        assertEquals(id2, result[1].id)
+        assertEquals(tag2.name, result[1].tags[0])
+        assertEquals("OK", result[1].mood.description)
     }
 
     @Test

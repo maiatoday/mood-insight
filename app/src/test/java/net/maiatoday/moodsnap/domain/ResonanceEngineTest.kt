@@ -1,6 +1,5 @@
 package net.maiatoday.moodsnap.domain
 
-import net.maiatoday.moodsnap.data.MoodEntry
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -8,7 +7,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
-import java.util.*
+import java.time.Instant
+import java.time.Duration
 
 class ResonanceEngineTest {
 
@@ -19,16 +19,19 @@ class ResonanceEngineTest {
         engine = ResonanceEngine()
     }
 
-    private fun createEntry(score: Int, daysAgo: Int): MoodEntry {
-        val now = System.currentTimeMillis()
-        val timestamp = Date(now - (1000L * 60 * 60 * 24 * daysAgo))
-        return MoodEntry(
-            moodScore = score,
+    private fun createEntry(score: Int, daysAgo: Int): MoodEntryDomain {
+        val now = Instant.now()
+        val timestamp = now.minus(Duration.ofDays(daysAgo.toLong()))
+        return MoodEntryDomain(
+            id = 0,
+            mood = Mood.fromScore(score),
             notes = "Test entry",
             movement = false,
             sunlight = false,
             sleep = false,
-            timestamp = timestamp
+            energy = 0,
+            timestamp = timestamp,
+            tags = emptyList()
         )
     }
 

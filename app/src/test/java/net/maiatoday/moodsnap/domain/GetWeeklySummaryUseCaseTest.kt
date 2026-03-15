@@ -81,7 +81,7 @@ class GetWeeklySummaryUseCaseTest {
         assertTrue(summary.tags.contains(tagHappy))
         assertTrue(summary.tags.contains(tagCalm))
         assertEquals(2, summary.dailyMoods.size)
-        assertEquals(5, summary.currentMood)
+        assertEquals(Mood.GREAT, summary.currentMood)
     }
 
     @Test
@@ -110,7 +110,8 @@ class GetWeeklySummaryUseCaseTest {
             notes = "Morning",
             movement = false,
             sunlight = false,
-            sleep = false
+            sleep = false,
+            energy = 0
         )
         val entry2 = MoodEntry(
             moodScore = 1,
@@ -118,7 +119,8 @@ class GetWeeklySummaryUseCaseTest {
             notes = "Evening",
             movement = false,
             sunlight = false,
-            sleep = false
+            sleep = false,
+            energy = 0
         )
         
         moodRepository.insert(entry1)
@@ -130,6 +132,6 @@ class GetWeeklySummaryUseCaseTest {
         // Then
         assertEquals(3.0f, summary.averageMood)
         assertEquals(1, summary.dailyMoods.size)
-        assertEquals(3, summary.dailyMoods[0].score)
+        assertEquals(3, summary.dailyMoods[0].mood.score)
     }
 }

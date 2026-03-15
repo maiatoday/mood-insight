@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import net.maiatoday.moodsnap.data.MoodEntry
 import net.maiatoday.moodsnap.data.MoodRepository
 import net.maiatoday.moodsnap.data.Tag
+import java.time.Instant
 import java.util.Date
 import javax.inject.Inject
 
@@ -23,7 +24,7 @@ data class AddEditUiState(
     val sunlight: Boolean = false,
     val sleep: Boolean = false,
     val energy: Int = 0,
-    val timestamp: Date = Date(),
+    val timestamp: Instant = Instant.now(),
     val isEntrySaved: Boolean = false
 )
 
@@ -62,7 +63,7 @@ class AddEditViewModel @Inject constructor(
                             sunlight = entryWithTags.moodEntry.sunlight,
                             sleep = entryWithTags.moodEntry.sleep,
                             energy = entryWithTags.moodEntry.energy,
-                            timestamp = entryWithTags.moodEntry.timestamp
+                            timestamp = entryWithTags.moodEntry.timestamp.toInstant()
                         )
                     }
                 }
@@ -127,7 +128,7 @@ class AddEditViewModel @Inject constructor(
                 sunlight = currentState.sunlight,
                 sleep = currentState.sleep,
                 energy = currentState.energy,
-                timestamp = currentState.timestamp
+                timestamp = Date.from(currentState.timestamp)
             )
 
             val savedId = if (isNew) {

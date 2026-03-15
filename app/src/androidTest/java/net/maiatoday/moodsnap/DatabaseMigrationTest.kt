@@ -13,7 +13,7 @@ import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class DatabaseMigrationTest {
-    private val TEST_DB = "migration-test"
+    private val testDb = "migration-test"
 
     @get:Rule
     val helper: MigrationTestHelper = MigrationTestHelper(
@@ -26,7 +26,7 @@ class DatabaseMigrationTest {
     @Throws(IOException::class)
     fun migrate2To3() {
         // Create version 2 of the database
-        var db = helper.createDatabase(TEST_DB, 2)
+        var db = helper.createDatabase(testDb, 2)
 
         // Insert some data using SQL (since we can't use current DAOs for old version)
         // In version 2, we had a 'tags' column that was removed in version 3
@@ -37,7 +37,7 @@ class DatabaseMigrationTest {
         db.close()
 
         // Re-open with Migration and version 3
-        db = helper.runMigrationsAndValidate(TEST_DB, 3, true, AppModule.MIGRATION_2_3)
+        db = helper.runMigrationsAndValidate(testDb, 3, true, AppModule.MIGRATION_2_3)
 
         // Verify data exists
         val cursor = db.query("SELECT * FROM mood_entries")

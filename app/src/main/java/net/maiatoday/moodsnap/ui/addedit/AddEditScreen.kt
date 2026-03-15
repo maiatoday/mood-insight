@@ -42,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import net.maiatoday.moodsnap.domain.Mood
 
 @Composable
 fun AddEditScreen(
@@ -207,21 +208,19 @@ fun MoodScoreSelector(
     moodScore: Int,
     onMoodChange: (Int) -> Unit
 ) {
-    val emojis = listOf("😢", "😐", "🙂", "😄", "🤩")
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text("Mood", style = MaterialTheme.typography.titleMedium)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            emojis.forEachIndexed { index, emoji ->
-                val score = index + 1
-                val isSelected = moodScore == score
+            Mood.entries.forEach { mood ->
+                val isSelected = moodScore == mood.score
                 Text(
-                    text = emoji,
+                    text = mood.emoji,
                     style = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
-                        .clickable { onMoodChange(score) }
+                        .clickable { onMoodChange(mood.score) }
                         .padding(8.dp)
                         .alpha(if (isSelected) 1f else 0.3f)
                 )

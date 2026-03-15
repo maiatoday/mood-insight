@@ -2,11 +2,12 @@ package net.maiatoday.moodsnap.domain
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import net.maiatoday.moodsnap.data.MoodEntryWithTags
 import net.maiatoday.moodsnap.data.MoodRepository
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.util.Date
 import javax.inject.Inject
 
 data class WeeklySummary(
@@ -18,12 +19,12 @@ data class WeeklySummary(
     val sleepCount: Int = 0,
     val tags: List<String> = emptyList(),
     val dailyMoods: List<DailyMood> = emptyList(),
-    val currentMood: Int? = null
+    val currentMood: Mood? = null
 )
 
 data class DailyMood(
     val dayLabel: String,
-    val score: Int
+    val mood: Mood
 )
 
 class GetWeeklySummaryUseCase @Inject constructor(
@@ -31,53 +32,53 @@ class GetWeeklySummaryUseCase @Inject constructor(
     private val resonanceEngine: ResonanceEngine
 ) {
     operator fun invoke(): Flow<WeeklySummary> {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, -7)
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
+        val now = Instant.now()
+        val sevenDaysAgo = now.minus(7, ChronoUnit.DAYS)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate()
+            .atStartOfDay(ZoneId.systemDefault())
+            .toInstant()
         
-        val sevenDaysAgo = calendar.time
+        val startDate = Date.from(sevenDaysAgo)
 
-        return moodRepository.getEntriesWithTagsFromDate(sevenDaysAgo).map { entriesWithTags ->
-            calculateSummary(entriesWithTags)
+        return moodRepository.getEntriesWithTagsFromDate(startDate).map { entriesWithTags ->
+            val domainEntries = entriesWithTags.map { it.toDomain() }
+            calculateSummary(domainEntries)
         }
     }
 
-    private fun calculateSummary(entriesWithTags: List<MoodEntryWithTags>): WeeklySummary {
-        if (entriesWithTags.isEmpty()) return WeeklySummary()
+    private fun calculateSummary(entries: List<MoodEntryDomain>): WeeklySummary {
+        if (entries.isEmpty()) return WeeklySummary()
 
-        val entries = entriesWithTags.map { it.moodEntry }
-        
-        val averageMood = entries.map { it.moodScore }.average().toFloat()
+        val averageMood = entries.map { it.mood.score }.average().toFloat()
         val averageEnergy = entries.map { it.energy }.average().toFloat()
+        
+        // Note: ResonanceEngine might still need raw MoodEntry if it's not refactored yet.
+        // If resonanceEngine.compute(entries) fails, we'd need to map back or refactor the engine.
+        // Assuming resonanceEngine.compute handles domain objects now or we will refactor it.
         val resonance = resonanceEngine.compute(entries).toFloat()
         
         val movementCount = entries.count { it.movement }
         val sunlightCount = entries.count { it.sunlight }
         val sleepCount = entries.count { it.sleep }
         
-        val tags = entriesWithTags.flatMap { it.tags }.map { it.name }.distinct()
+        val tags = entries.flatMap { it.tags }.distinct()
         
-        val dateFormat = SimpleDateFormat("EEE", Locale.getDefault())
+        val dayFormatter = DateTimeFormatter.ofPattern("EEE")
+        val zoneId = ZoneId.systemDefault()
         
         val dailyMoods = entries
-            .groupBy { 
-                val cal = Calendar.getInstance()
-                cal.time = it.timestamp
-                cal.get(Calendar.DAY_OF_YEAR) to cal.get(Calendar.YEAR)
-            }
-            .map { (_, dailyEntries) ->
-                val avgScore = dailyEntries.map { it.moodScore }.average().toInt()
-                val firstEntry = dailyEntries.first()
-                val dayLabel = dateFormat.format(firstEntry.timestamp)
-                firstEntry.timestamp.time to DailyMood(dayLabel, avgScore)
+            .groupBy { it.timestamp.atZone(zoneId).toLocalDate() }
+            .map { (date, dailyEntries) ->
+                val avgScore = dailyEntries.map { it.mood.score }.average().toInt()
+                val mood = Mood.fromScore(avgScore)
+                val dayLabel = date.format(dayFormatter)
+                date to DailyMood(dayLabel, mood)
             }
             .sortedBy { it.first }
             .map { it.second }
 
-        val currentMood = entries.maxByOrNull { it.timestamp.time }?.moodScore
+        val currentMood = entries.maxByOrNull { it.timestamp }?.mood
         
         return WeeklySummary(
             averageMood = averageMood,
