@@ -1,29 +1,33 @@
+@file:OptIn(androidx.compose.ui.text.ExperimentalTextApi::class)
+
 package net.maiatoday.moodsnap.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.googlefonts.Font
-import androidx.compose.ui.text.googlefonts.GoogleFont
+import androidx.compose.ui.text.font.FontVariation
+import androidx.compose.ui.text.font.FontWeight
 import net.maiatoday.moodsnap.R
-
-val provider = GoogleFont.Provider(
-    providerAuthority = "com.google.android.gms.fonts",
-    providerPackage = "com.google.android.gms",
-    certificates = R.array.com_google_android_gms_fonts_certs
-)
 
 val bodyFontFamily = FontFamily(
     Font(
-        googleFont = GoogleFont("Anybody"),
-        fontProvider = provider,
+        resId = R.font.anybody,
+        weight = FontWeight.Normal,
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(400)
+        )
+    ),
+    Font(
+        resId = R.font.anybody,
+        weight = FontWeight.Bold,
+        variationSettings = FontVariation.Settings(
+            FontVariation.weight(700)
+        )
     )
 )
 
 val displayFontFamily = FontFamily(
-    Font(
-        googleFont = GoogleFont("Amethysta"),
-        fontProvider = provider,
-    )
+    Font(resId = R.font.amethysta, weight = FontWeight.Normal)
 )
 
 // Default Material 3 typography values
