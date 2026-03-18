@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<journey name="Add a Mood">
+    <description>Add a new mood record</description>
+    <actions xml:space="preserve">
+        <action>Tap on the Add floating action button</action><action>Verify that the Add/Edit Mood screen opens</action><action>Tap on the 🤩 icon</action><action>Verify that it is no longer dimmed</action><action>Type in the Notes text field a 7 word description of your day</action><action>tap the thumbs up for sleep and sunlight</action><action>Set the Energy level to 15</action><action>tap the + to enter a new tag</action><action>type a new tag 'walk the dog' in the New tag field and tap +</action><action>verify that the tag was added to the entry</action><action>Tap Save</action><action>Verify that the emojy for Today on the overview screen is 🤩</action>
+    </actions>
+</journey>
