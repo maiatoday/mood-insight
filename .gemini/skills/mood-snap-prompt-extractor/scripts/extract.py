@@ -35,8 +35,8 @@ def extract_prompts():
                     text = opt_value
             
             if name and text:
-                # Replace spaces with underscores
-                clean_name = name.replace(' ', '_')
+                # Replace spaces, slashes, and ampersands with underscores
+                clean_name = name.replace(' ', '_').replace('/', '_').replace('&', '_')
                 if not clean_name.endswith('.md'):
                     clean_name += '.md'
                 file_path = os.path.join(prompts_dir, clean_name)

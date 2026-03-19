@@ -144,8 +144,48 @@
         </PromptTemplate>
         <PromptTemplate>
           <option name="enabled" value="true" />
-          <option name="name" value="09.05 Agent Implementation Plan" />
+          <option name="name" value="Agent Implementation with Plan" />
           <option name="text" value="Based on the research I did in another tab, I want to implement a new feature.&#10;&#10;$CURRENT_FILE&#10;&#10;Ask me questions if anything isn't clear or if the goal isn't clear. Generate a full execution plan for these steps and wait for my approval before modifying files. " />
+        </PromptTemplate>
+        <PromptTemplate>
+          <option name="enabled" value="true" />
+          <option name="name" value="09.05.01 Add permissions" />
+          <option name="text" value="We are building a notification alarm. In  @AndroidManifest.xml add the following:&#10;Permissions &amp; Manifest Requirements&#10;• android.permission.POST_NOTIFICATIONS: Required for Android 13+ (API 33) to show the reminder.&#10;• android.permission.RECEIVE_BOOT_COMPLETED: Required to reschedule alarms after a device reboot.&#10;• android.permission.SCHEDULE_EXACT_ALARM: Not required as we are using inexact alarms to respect system battery optimizations." />
+        </PromptTemplate>
+        <PromptTemplate>
+          <option name="enabled" value="true" />
+          <option name="name" value="09.05.02 Add Data Layer" />
+          <option name="text" value="Now lets add the Data layer&#10;Phase 1: Data Persistence (DataStore)&#10;Create a UserPreferencesRepository using Jetpack DataStore to persist reminder settings.&#10;• Fields: reminder_enabled (Boolean), reminder_hour (Int), reminder_minute (Int).&#10;• Flows: Expose a preferencesFlow to the ViewModel." />
+        </PromptTemplate>
+        <PromptTemplate>
+          <option name="enabled" value="true" />
+          <option name="name" value="09.05.03 Alarm Scheduling Logic" />
+          <option name="text" value="Phase 2: Alarm Scheduling Logic&#10;Create a ReminderScheduler utility class to encapsulate AlarmManager interactions.&#10;• Use alarmManager.setInexactRepeating() with AlarmManager.RTC_WAKEUP.&#10;• Target a BroadcastReceiver via a PendingIntent.&#10;• Note: Use PendingIntent.FLAG_IMMUTABLE for security." />
+        </PromptTemplate>
+        <PromptTemplate>
+          <option name="enabled" value="true" />
+          <option name="name" value="09.05.04 Notification and Broadcast Receiver" />
+          <option name="text" value="Phase 3: Notification &amp; Broadcast Receiver&#10;Implement the ReminderReceiver : BroadcastReceiver.&#10;• Notification Channel: Initialize a dedicated &quot;Reminders&quot; channel (required for API 26+).&#10;• Notification Construction: Use NotificationCompat.Builder with a deep link to the mood logging screen.&#10;• Trigger logic: When onReceive is called, check DataStore to verify the reminder is still enabled before posting the notification." />
+        </PromptTemplate>
+        <PromptTemplate>
+          <option name="enabled" value="true" />
+          <option name="name" value="09.05.05 Reliability &amp; Maintenance" />
+          <option name="text" value="Phase 4: Reliability &amp; Maintenance&#10;Ensure the reminder survives system events.&#10;• Boot Recovery: Implement a RebootReceiver that listens for ACTION_BOOT_COMPLETED. It should read the scheduled time from DataStore and call the ReminderScheduler to re-register the alarm.&#10;• Timezone Changes: (Optional but recommended) Listen for ACTION_TIMEZONE_CHANGED to ensure the alarm aligns with the user's local time." />
+        </PromptTemplate>
+        <PromptTemplate>
+          <option name="enabled" value="true" />
+          <option name="name" value="09.05.06 Architecture Integration (UI/ViewModel)" />
+          <option name="text" value="Phase 5: Architecture Integration (UI/ViewModel)&#10;• ViewModel: Create a SettingsViewModel that provides a ToggleReminder function.&#10;• UseCase: Create a ScheduleReminderUseCase that the ViewModel calls. This UseCase will update DataStore and trigger the ReminderScheduler.&#10;❗️ Critical Note for Execution: Ensure the notification logic checks for the POST_NOTIFICATIONS permission at runtime before attempting to show the notification, or the system will silently drop the intent on API 33+." />
+        </PromptTemplate>
+        <PromptTemplate>
+          <option name="enabled" value="true" />
+          <option name="name" value="09.05.07 Settings Screen" />
+          <option name="text" value="Complete the work on the SettingsScreen. Go ahead and hoist the permission handling if necesary. Also provide a way to set the time for the notification from the SettingsScreen" />
+        </PromptTemplate>
+        <PromptTemplate>
+          <option name="enabled" value="true" />
+          <option name="name" value="09.05.08 Unit tests" />
+          <option name="text" value="Run the unit tests, and fix any errors. Add new unit tests for new classes. Prefer using fakes instead of mocks and continue to update the unit tests. Specifically expand the unit tests for SettingsScreenViewModel and add new unit tests for the changes added to the other layers e.g.  @ScheduleReminderUseCase.kt" />
         </PromptTemplate>
       </list>
     </option>
