@@ -1,6 +1,9 @@
 package net.maiatoday.moodsnap.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -10,9 +13,17 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import net.maiatoday.moodsnap.data.AppDatabase
+import net.maiatoday.moodsnap.data.UserPreferenceRepository
 import net.maiatoday.moodsnap.data.MoodEntryDao
 import net.maiatoday.moodsnap.data.TagDao
+import net.maiatoday.moodsnap.data.DefaultUserPreferenceRepository
+import net.maiatoday.moodsnap.notifications.INotificationHelper
+import net.maiatoday.moodsnap.notifications.NotificationHelper
+import net.maiatoday.moodsnap.notifications.IReminderScheduler
+import net.maiatoday.moodsnap.notifications.ReminderScheduler
 import javax.inject.Singleton
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -69,5 +80,29 @@ object AppModule {
     @Provides
     fun provideTagDao(database: AppDatabase): TagDao {
         return database.tagDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return context.dataStore
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserPreferenceRepository(dataStore: DataStore<Preferences>): UserPreferenceRepository {
+        return DefaultUserPreferenceRepository(dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideReminderScheduler(@ApplicationContext context: Context): IReminderScheduler {
+        return ReminderScheduler(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotificationHelper(@ApplicationContext context: Context): INotificationHelper {
+        return NotificationHelper(context)
     }
 }
