@@ -98,11 +98,9 @@ fun AddEditContent(
             selectedTags = uiState.tags,
             onTagSelected = {
                 onTagAdd(it)
-                showTagDialog = false
             },
             onTagCreated = {
                 onTagCreate(it)
-                showTagDialog = false
             },
             onDismissRequest = { showTagDialog = false }
         )

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<journey name="Edit a Mood">
+    <description>Create a mood record and then edit it from history</description>
+    <actions xml:space="preserve">
+        <action>Tap on the Add floating action button</action>
+        <action>Verify that the Add/Edit Mood screen opens</action>
+        <action>Tap on the 😐 icon</action>
+        <action>Type in the Notes text field 'Initial note for editing'</action>
+        <action>Dismiss the keyboard</action>
+        <action>Tap Save</action>
+        <action>Tap on the History toolbar icon</action>
+        <action>Tap on the mood entry with 'Initial note for editing'</action>
+        <action>Verify that the Add/Edit Mood screen opens</action>
+        <action>Type in the Notes text field ' - updated'</action>
+        <action>Dismiss the keyboard</action>
+        <action>Tap Save</action>
+        <action>Verify that the mood entry in history now contains 'Initial note for editing - updated'</action>
+    </actions>
+</journey>

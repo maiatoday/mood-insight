@@ -65,7 +65,7 @@ fun TagSelectionDialog(
                             }
                         })
                     )
-                    IconButton(
+                    TextButton(
                         onClick = {
                             if (newTagName.isNotBlank()) {
                                 onTagCreated(newTagName.trim())
@@ -73,7 +73,7 @@ fun TagSelectionDialog(
                             }
                         }
                     ) {
-                        Icon(Icons.Default.Add, contentDescription = "Create Tag")
+                        Text("Add")
                     }
                 }
 
@@ -102,8 +102,13 @@ fun TagSelectionDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismissRequest) {
-                Text("Done")
+            TextButton(onClick = {
+                if (newTagName.isNotBlank()) {
+                    onTagCreated(newTagName.trim())
+                }
+                onDismissRequest()
+            }) {
+                Text("Save")
             }
         }
     )
